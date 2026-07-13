@@ -156,9 +156,14 @@ def menu_selecionar_formato(url, config, imp_target):
                 print("3. Na dúvida, APENAS APERTE ENTER: a ferramenta escolherá a melhor")
                 print("   qualidade (vídeo e áudio juntos) automaticamente.")
                 
-            print("\n====================================================================================")
-            print(f"{'ID':<10} | {'RESOLUÇÃO':<15} | {'EXTENSÃO':<8} | {'VCODEC':<12} | {'ACODEC':<12} | {'TAMANHO'}")
-            print("-" * 84)
+            YELLOW = '\033[93m'
+            GREEN = '\033[92m'
+            GRAY = '\033[90m'
+            RESET = '\033[0m'
+            
+            print(f"\n{YELLOW}===================================================================================={RESET}")
+            print(f"{YELLOW}{'ID':<10} | {'RESOLUÇÃO':<15} | {'EXTENSÃO':<8} | {'VCODEC':<12} | {'ACODEC':<12} | {'TAMANHO'}{RESET}")
+            print(f"{YELLOW}{'-' * 84}{RESET}")
             
             for f in formats:
                 fid = str(f.get('format_id', 'N/A'))
@@ -171,8 +176,12 @@ def menu_selecionar_formato(url, config, imp_target):
                 if opcao == '2' and (vcodec == 'none' or vcodec == 'images'):
                     continue # Na opção 2, ignora áudio puro e imagens
                     
-                print(f"{fid:<10} | {res:<15} | {ext:<8} | {vcodec:<12} | {acodec:<12} | {filesize}")
-            print("====================================================================================\n")
+                v_color = GRAY if vcodec == 'none' or 'only' in vcodec else RESET
+                a_color = GRAY if acodec == 'none' or 'only' in acodec else RESET
+                r_color = GRAY if vcodec == 'none' or vcodec == 'images' else RESET
+                
+                print(f"{GREEN}{fid:<10}{RESET} | {r_color}{res:<15}{RESET} | {ext:<8} | {v_color}{vcodec:<12}{RESET} | {a_color}{acodec:<12}{RESET} | {YELLOW}{filesize}{RESET}")
+            print(f"{YELLOW}===================================================================================={RESET}\n")
             
             fid = input("Digite o ID do formato desejado (Enter para melhor): ").strip()
             if not fid:
