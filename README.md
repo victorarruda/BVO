@@ -1,7 +1,7 @@
 <h1 align="center"> BVO - Baixador de Vídeos Online (OldSchool) </h1>
 
 <p align="center">
-  Um sistema CLI focado em máxima estabilidade e eficiência para criar cópias de segurança (backup local) de vídeos de centenas de plataformas, empoderado pelo <code>yt-dlp</code>.
+  Um sistema CLI focado em máxima estabilidade e eficiência para criar cópias de segurança (backup local) de vídeos de centenas de plataformas, impulsionado pelo <code>yt-dlp</code>.
 </p>
 
 ## Funcionalidades Principais
