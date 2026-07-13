@@ -14,15 +14,28 @@
 
 ## Como usar
 
+### Instalação Expressa (Winget)
+Abra o PowerShell (Windows 10/11) e cole o comando abaixo para instalar todos os pré-requisitos (Python, FFmpeg e Git) automaticamente e em segundo plano:
+```powershell
+winget install Python.Python.3.12 Gyan.FFmpeg Git.Git -e --accept-package-agreements --accept-source-agreements
+```
+*(Após o término, feche e abra o PowerShell novamente para recarregar as variáveis de sistema).*
+
+Em seguida, baixe e inicie o aplicativo com:
+```powershell
+git clone https://github.com/victorarruda/BVO.git
+cd BVO/BVO_OldSchool
+.\iniciar.bat
+```
+
+### Método Tradicional
 1. **Pré-requisitos:**
-   - Ter o [Python](https://www.python.org/downloads/) instalado no computador.
+   - Ter o [Python](https://www.python.org/downloads/) e o [Git](https://git-scm.com/) instalados no computador.
    - Ter o [FFmpeg](https://ffmpeg.org/download.html) instalado e adicionado ao `PATH` do sistema (obrigatório para a mesclagem de áudio/vídeo em alta qualidade).
 
 2. **Executando:**
    - Dê um duplo-clique no arquivo `iniciar.bat` (Windows) ou execute `python baixar_vod.py` pelo terminal.
-   - Na primeira execução, o aplicativo instalará todas as dependências sozinho.
-   - Escolha a opção **1** para colar um link e fazer o download, ou **2** para ver o histórico.
-   - Durante o download, você poderá escolher baixar a melhor qualidade imediatamente, listar todos os formatos ou listar apenas os vídeos e pedir para embutir o melhor áudio automaticamente.
+   - Na primeira inicialização, o aplicativo instalará todas as dependências em Python sozinho e o menu se abrirá.
 
 ## Arquivos Gerados
 - `config.ini`: Salva as configurações locais, o sistema de retomada (Resume) e as preferências do seu navegador de extração.
