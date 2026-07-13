@@ -62,7 +62,7 @@ Basta dar um **Fork**, criar sua branch e mandar um **Pull Request**!
 ## Créditos e Agradecimentos
 
 - **Idealização e Desenvolvimento Principal:** [Victor Arruda](https://github.com/victorarruda)
-- **Time do `yt-dlp`:** Pela batalha diária de engenharia reversa para manter os protocolos de download das dezenas de plataformas estáveis e funcionais.
+- **Time do `yt-dlp`:** Pelo esforço contínuo de manutenção para manter os protocolos de download das dezenas de plataformas estáveis e funcionais.
 - **Comunidade Open Source:** Pelo suporte incansável na manutenção das dependências vitais para o projeto.
 
 ## Licenças
