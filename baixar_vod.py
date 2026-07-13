@@ -147,22 +147,32 @@ def menu_selecionar_formato(url, config, imp_target):
             if os.name == 'nt':
                 os.system('color 07')
                 
-            print("\n==========================================================================")
-            print(f"{'ID':<10} | {'RESOLUÇÃO':<15} | {'EXTENSÃO':<8} | {'VCODEC':<15} | {'TAMANHO'}")
-            print("-" * 74)
+            if opcao == '1':
+                print("\n==========================================================================")
+                print("[AVISO SOBRE TAMANHO E FORMATOS]")
+                print("1. O tamanho exato pode não aparecer para streams contínuos (ex: m3u8).")
+                print("2. Como saber se tem Áudio + Vídeo? Olhe as colunas VCODEC e ACODEC.")
+                print("   Evite formatos marcados como 'none' ou 'video/audio only'.")
+                print("3. Na dúvida, APENAS APERTE ENTER: a ferramenta escolherá a melhor")
+                print("   qualidade (vídeo e áudio juntos) automaticamente.")
+                
+            print("\n====================================================================================")
+            print(f"{'ID':<10} | {'RESOLUÇÃO':<15} | {'EXTENSÃO':<8} | {'VCODEC':<12} | {'ACODEC':<12} | {'TAMANHO'}")
+            print("-" * 84)
             
             for f in formats:
                 fid = str(f.get('format_id', 'N/A'))
                 ext = str(f.get('ext', 'N/A'))
                 res = str(f.get('resolution', f.get('format_note', 'N/A')))
                 vcodec = str(f.get('vcodec', 'none'))
+                acodec = str(f.get('acodec', 'none'))
                 filesize = formatar_tamanho(f.get('filesize', f.get('filesize_approx', 0)))
                 
                 if opcao == '2' and (vcodec == 'none' or vcodec == 'images'):
                     continue # Na opção 2, ignora áudio puro e imagens
                     
-                print(f"{fid:<10} | {res:<15} | {ext:<8} | {vcodec:<15} | {filesize}")
-            print("==========================================================================\n")
+                print(f"{fid:<10} | {res:<15} | {ext:<8} | {vcodec:<12} | {acodec:<12} | {filesize}")
+            print("====================================================================================\n")
             
             fid = input("Digite o ID do formato desejado (Enter para melhor): ").strip()
             if not fid:
