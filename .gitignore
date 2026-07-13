@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+config.ini
+historico_downloads.txt
+*.part
+*.ytdl
+*.webm
+*.mp4
+*.mkv
