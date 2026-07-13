@@ -8,6 +8,13 @@ import configparser
 import subprocess
 from datetime import datetime
 
+YELLOW = '\033[93m'
+GREEN = '\033[92m'
+GRAY = '\033[90m'
+RED = '\033[91m'
+CYAN = '\033[96m'
+RESET = '\033[0m'
+
 CONFIG_FILE = "config.ini"
 
 def ensure_dependencies():
@@ -51,9 +58,9 @@ def log_download(title, size_str, url, arquivo_historico):
 
 def listar_historico(arquivo_historico):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("\n" + "=" * 80)
-    print(" " * 30 + "HISTÓRICO DE DOWNLOADS")
-    print("=" * 80)
+    print(f"\n{YELLOW}{'=' * 80}")
+    print(f"{YELLOW}{' ' * 30}HISTÓRICO DE DOWNLOADS")
+    print(f"{YELLOW}{'=' * 80}")
     if not os.path.exists(arquivo_historico):
         print("Nenhum histórico encontrado.")
     else:
@@ -62,8 +69,8 @@ def listar_historico(arquivo_historico):
             if not linhas:
                 print("Nenhum histórico encontrado.")
             else:
-                print(f"{'DATA':<21} | {'TAMANHO':<10} | {'TÍTULO'}")
-                print("-" * 80)
+                print(f"{YELLOW}{'DATA':<21} | {'TAMANHO':<10} | {'TÍTULO'}")
+                print(f"{YELLOW}{'-' * 80}")
                 for linha in linhas:
                     partes = linha.strip().split(" | ")
                     if len(partes) >= 4:
@@ -72,27 +79,27 @@ def listar_historico(arquivo_historico):
                         tamanho = partes[-2]
                         titulo = " - ".join(partes[1:-2])
                         titulo = titulo[:40] + "..." if len(titulo) > 40 else titulo
-                        print(f"{data:<21} | {tamanho:<10} | {titulo}")
+                        print(f"{GREEN}{data:<21}{RESET} | {YELLOW}{tamanho:<10}{RESET} | {titulo}")
                     else:
                         print(linha.strip())
-    print("=" * 80)
+    print(f"{YELLOW}{'=' * 80}")
     input("\nPressione Enter para voltar ao menu...")
 
 def menu_config_browser(config):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("=======================================")
-    print(" CONFIGURAÇÕES DE NAVEGADOR (COOKIES)")
-    print("=======================================\n")
+    print(f"{YELLOW}=======================================")
+    print(f"{YELLOW} CONFIGURAÇÕES DE NAVEGADOR (COOKIES)")
+    print(f"{YELLOW}=======================================\n")
     print("Se o YouTube bloquear seu download pedindo para confirmar")
     print("que você não é um robô, você pode permitir que o BVO leia")
-    print("os cookies do seu navegador para burlar o bloqueio.\n")
+    print("os cookies do seu navegador para evitar o bloqueio.\n")
     print("Qual navegador você costuma usar para assistir vídeos?")
-    print("1 - Chrome")
-    print("2 - Edge")
-    print("3 - Firefox")
-    print("4 - Brave")
-    print("5 - Opera")
-    print("6 - Nenhum (Desativar Extração)\n")
+    print(f"{GREEN}1{RESET} - Chrome")
+    print(f"{GREEN}2{RESET} - Edge")
+    print(f"{GREEN}3{RESET} - Firefox")
+    print(f"{GREEN}4{RESET} - Brave")
+    print(f"{GREEN}5{RESET} - Opera")
+    print(f"{GREEN}6{RESET} - Nenhum (Desativar Extração)\n")
     
     nav_op = input("Escolha uma opção (Enter para voltar): ").strip()
     nav_map = {'1': 'chrome', '2': 'edge', '3': 'firefox', '4': 'brave', '5': 'opera', '6': ''}
@@ -100,7 +107,7 @@ def menu_config_browser(config):
         config['Geral']['navegador_cookies'] = nav_map[nav_op]
         with open(CONFIG_FILE, 'w', encoding='utf-8') as configfile:
             config.write(configfile)
-        print(f"\nConfiguração salva com sucesso! Navegador definido para: {nav_map[nav_op].capitalize() if nav_map[nav_op] else 'Nenhum'}")
+        print(f"\n{GREEN}Configuração salva com sucesso!{RESET} Navegador definido para: {nav_map[nav_op].capitalize() if nav_map[nav_op] else 'Nenhum'}")
         input("Pressione Enter para continuar...")
 
 def construir_opcoes_ytdlp(config, imp_target):
@@ -123,11 +130,13 @@ def formatar_tamanho(bytes_size):
 
 def menu_selecionar_formato(url, config, imp_target):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(f"Link inserido: {url}")
-    print("\nO que você deseja fazer?")
-    print("1 - Listar todos os arquivos/formatos disponíveis (Completo)")
-    print("2 - Listar apenas as resoluções de vídeo e escolher o áudio manualmente")
-    print("3 - Baixar a melhor qualidade (Vídeo + Áudio) automaticamente")
+    print(f"{YELLOW}========================================")
+    print(f" Link inserido: {url}")
+    print(f"{YELLOW}========================================\n")
+    print("O que você deseja fazer?")
+    print(f"{GREEN}1{RESET} - Listar todos os arquivos/formatos disponíveis (Completo)")
+    print(f"{GREEN}2{RESET} - Listar apenas as resoluções de vídeo e escolher o áudio manualmente")
+    print(f"{GREEN}3{RESET} - Baixar a melhor qualidade (Vídeo + Áudio) automaticamente")
     
     opcao = input("\nDigite a opção desejada (1, 2 ou 3): ").strip()
     if opcao not in ['1', '2', '3']:
@@ -144,33 +153,28 @@ def menu_selecionar_formato(url, config, imp_target):
             info = ydl.extract_info(url, download=False)
             formats = info.get('formats', [])
             
-            if os.name == 'nt':
-                os.system('color 07')
-                
             if opcao == '1':
-                print("\n==========================================================================")
-                print("[AVISO SOBRE TAMANHO E FORMATOS]")
-                print("1. O tamanho exato pode não aparecer para streams contínuos (ex: m3u8).")
-                print("2. Como saber se tem Áudio + Vídeo? Olhe as colunas VCODEC e ACODEC.")
-                print("   Evite formatos marcados como 'none' ou 'video/audio only'.")
-                print("3. Na dúvida, APENAS APERTE ENTER: a ferramenta escolherá a melhor")
+                print(f"\n{YELLOW}======================================================================================================================================================")
+                print(f"{RED}[AVISO SOBRE TAMANHO E FORMATOS]")
+                print(f"{YELLOW}1.{RESET} O tamanho exato pode não aparecer para streams contínuos (ex: m3u8).")
+                print(f"{YELLOW}2.{RESET} Como saber se tem Áudio + Vídeo? Olhe as colunas VCODEC e ACODEC.")
+                print(f"   Evite formatos marcados como {GRAY}'none'{RESET} ou {GRAY}'video/audio only'{RESET}.")
+                print(f"{YELLOW}3.{RESET} Na dúvida, APENAS APERTE ENTER: a ferramenta escolherá a melhor")
                 print("   qualidade (vídeo e áudio juntos) automaticamente.")
-                
-            YELLOW = '\033[93m'
-            GREEN = '\033[92m'
-            GRAY = '\033[90m'
-            RESET = '\033[0m'
-            
-            print(f"\n{YELLOW}===================================================================================={RESET}")
-            print(f"{YELLOW}{'ID':<10} | {'RESOLUÇÃO':<15} | {'EXTENSÃO':<8} | {'VCODEC':<12} | {'ACODEC':<12} | {'TAMANHO'}{RESET}")
-            print(f"{YELLOW}{'-' * 84}{RESET}")
+                print(f"{YELLOW}======================================================================================================================================================")
+                print(f"{YELLOW}{'ID':<6} | {'EXT':<5} | {'RESOLUÇÃO':<13} | {'FPS':<4} | {'CH':<3} | {'TAMANHO':<10} | {'TBR':<6} | {'PROTO':<5} | {'VCODEC':<12} | {'VBR':<5} | {'ACODEC':<12} | {'ABR':<5} | {'ASR':<7} | {'INFO'}")
+                print(f"{YELLOW}{'-' * 150}")
+            else:
+                print(f"\n{YELLOW}====================================================================================")
+                print(f"{YELLOW}{'ID':<10} | {'RESOLUÇÃO':<15} | {'EXTENSÃO':<8} | {'VCODEC':<12} | {'ACODEC':<12} | {'TAMANHO'}")
+                print(f"{YELLOW}{'-' * 84}")
             
             for f in formats:
                 fid = str(f.get('format_id', 'N/A'))
                 ext = str(f.get('ext', 'N/A'))
                 res = str(f.get('resolution', f.get('format_note', 'N/A')))
-                vcodec = str(f.get('vcodec', 'none'))
-                acodec = str(f.get('acodec', 'none'))
+                vcodec = str(f.get('vcodec', 'none'))[:12]
+                acodec = str(f.get('acodec', 'none'))[:12]
                 filesize = formatar_tamanho(f.get('filesize', f.get('filesize_approx', 0)))
                 
                 if opcao == '2' and (vcodec == 'none' or vcodec == 'images'):
@@ -180,8 +184,24 @@ def menu_selecionar_formato(url, config, imp_target):
                 a_color = GRAY if acodec == 'none' or 'only' in acodec else RESET
                 r_color = GRAY if vcodec == 'none' or vcodec == 'images' else RESET
                 
-                print(f"{GREEN}{fid:<10}{RESET} | {r_color}{res:<15}{RESET} | {ext:<8} | {v_color}{vcodec:<12}{RESET} | {a_color}{acodec:<12}{RESET} | {YELLOW}{filesize}{RESET}")
-            print(f"{YELLOW}===================================================================================={RESET}\n")
+                if opcao == '1':
+                    fps = str(f.get('fps', ''))[:4] if f.get('fps') else ''
+                    ch = str(f.get('audio_channels', '')) if f.get('audio_channels') else ''
+                    tbr = f"{int(f.get('tbr', 0))}k" if f.get('tbr') else ""
+                    proto = str(f.get('protocol', ''))[:5]
+                    vbr = f"{int(f.get('vbr', 0))}k" if f.get('vbr') else ""
+                    abr = f"{int(f.get('abr', 0))}k" if f.get('abr') else ""
+                    asr = f"{int(f.get('asr', 0))}Hz" if f.get('asr') else ""
+                    info = str(f.get('format_note', ''))[:20]
+                    
+                    print(f"{GREEN}{fid:<6}{RESET} | {ext:<5} | {r_color}{res:<13}{RESET} | {fps:<4} | {ch:<3} | {YELLOW}{filesize:<10}{RESET} | {tbr:<6} | {proto:<5} | {v_color}{vcodec:<12}{RESET} | {vbr:<5} | {a_color}{acodec:<12}{RESET} | {abr:<5} | {asr:<7} | {info}")
+                else:
+                    print(f"{GREEN}{fid:<10}{RESET} | {r_color}{res:<15}{RESET} | {ext:<8} | {v_color}{vcodec:<12}{RESET} | {a_color}{acodec:<12}{RESET} | {YELLOW}{filesize}")
+            
+            if opcao == '1':
+                print(f"{YELLOW}======================================================================================================================================================{RESET}\n")
+            else:
+                print(f"{YELLOW}===================================================================================={RESET}\n")
             
             fid = input("Digite o ID do formato desejado (Enter para melhor): ").strip()
             if not fid:
@@ -196,20 +216,20 @@ def menu_selecionar_formato(url, config, imp_target):
             
     except Exception as e:
         error_msg = str(e)
-        print("\n=======================================")
-        print("[ERRO] Falha ao extrair formatos.")
+        print(f"\n{RED}=======================================")
+        print(f"{RED}[ERRO] Falha ao extrair formatos.")
         if "403" in error_msg or "Sign in" in error_msg or "bot" in error_msg.lower():
-            print("DICA: O YouTube exigiu autenticação! Volte ao menu inicial,")
-            print("vá na Opção 3 (Configurações) e ative os Cookies do navegador!")
+            print(f"{YELLOW}DICA: O YouTube exigiu autenticação! Volte ao menu inicial,")
+            print(f"{YELLOW}vá na Opção 3 (Configurações) e ative os Cookies do navegador!")
         else:
             print(f"Detalhe: {error_msg}")
-        print("=======================================")
+        print(f"{RED}=======================================")
         input("Pressione Enter para voltar...")
         return None
 
 def executar_download(url, format_id, pasta_destino, arquivo_historico, imp_target, config):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(f"\nIniciando o download com o formato selecionado: {format_id} ...\n")
+    print(f"\n{GREEN}Iniciando o download com o formato selecionado: {format_id} ...{RESET}\n")
     
     config['Geral']['download_pendente'] = url
     config['Geral']['formato_pendente'] = format_id
@@ -223,7 +243,7 @@ def executar_download(url, format_id, pasta_destino, arquivo_historico, imp_targ
     
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            print("Extraindo informações do vídeo...")
+            print(f"{CYAN}Extraindo informações do vídeo...")
             info = ydl.extract_info(url, download=False)
             title = info.get('title', url)
             
@@ -239,22 +259,22 @@ def executar_download(url, format_id, pasta_destino, arquivo_historico, imp_targ
             except yt_dlp.utils.DownloadError as e:
                 error_msg = str(e)
                 if "403" in error_msg or "Forbidden" in error_msg:
-                    print("\n========================================")
-                    print("[ERRO] O servidor de origem recusou a continuação do download (Erro 403).")
-                    print("Isso geralmente acontece quando um download pendente fica antigo e o link expira.")
-                    print("========================================\n")
+                    print(f"\n{RED}========================================")
+                    print(f"{RED}[ERRO] O servidor de origem recusou a continuação do download (Erro 403).")
+                    print(f"{YELLOW}Isso geralmente acontece quando um download pendente fica antigo e o link expira.")
+                    print(f"{RED}========================================{RESET}\n")
                     resp = input("Deseja apagar o arquivo parcial corrompido/antigo e baixar do ZERO? (S/N): ").strip().upper()
                     if resp == 'S':
                         for ext in ['.part', '.ytdl', '']:
                             f = filepath + ext
                             if os.path.exists(f): os.remove(f)
-                        print("\nReiniciando o download do zero...\n")
+                        print(f"\n{YELLOW}Reiniciando o download do zero...{RESET}\n")
                         ydl.process_info(info)
                     else:
-                        print("\nDownload cancelado pelo usuário.")
+                        print(f"\n{GRAY}Download cancelado pelo usuário.")
                         return
                 else:
-                    print(f"\n[ERRO YT-DLP]: {error_msg}")
+                    print(f"\n{RED}[ERRO YT-DLP]: {error_msg}")
                     return
                 
             if filepath and os.path.exists(filepath):
@@ -263,7 +283,7 @@ def executar_download(url, format_id, pasta_destino, arquivo_historico, imp_targ
             else:
                 size_str = "Desconhecido"
             
-        print("\nDownload finalizado com sucesso!")
+        print(f"\n{GREEN}Download finalizado com sucesso!")
         log_download(title, size_str, url, arquivo_historico)
         
         config['Geral']['download_pendente'] = ''
@@ -272,9 +292,9 @@ def executar_download(url, format_id, pasta_destino, arquivo_historico, imp_targ
             config.write(configfile)
             
     except Exception as e:
-        print(f"\nOcorreu um erro inesperado: {e}")
+        print(f"\n{RED}Ocorreu um erro inesperado: {e}")
         
-    print("\n" + "=" * 40)
+    print(f"\n{YELLOW}{'=' * 40}")
     input("Pressione Enter para voltar ao menu principal...")
 
 def check_resume(config, pasta_destino, arquivo_historico, imp_target):
@@ -283,10 +303,10 @@ def check_resume(config, pasta_destino, arquivo_historico, imp_target):
     
     if url_pendente:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("========================================")
-        print(" BVO - BAIXADOR DE VÍDEOS ONLINE (OldSchool) V2")
-        print("========================================\n")
-        print(f" ATENÇÃO: Foi detectado um download interrompido!")
+        print(f"{YELLOW}========================================")
+        print(f"{YELLOW} BVO - BAIXADOR DE VÍDEOS ONLINE (OldSchool) - V2")
+        print(f"{YELLOW}========================================\n")
+        print(f"{RED} ATENÇÃO: Foi detectado um download interrompido!")
         print(f" URL: {url_pendente}")
         
         resp = input("\nDeseja retomar este download de onde parou? (S/N): ").strip().upper()
@@ -299,6 +319,9 @@ def check_resume(config, pasta_destino, arquivo_historico, imp_target):
                 config.write(configfile)
 
 def main():
+    if os.name == 'nt':
+        os.system('color 07')
+        
     config = load_config()
     arquivo_historico = config.get('Geral', 'arquivo_historico', fallback='historico_downloads.txt')
     pasta_destino = config.get('Geral', 'pasta_destino', fallback='.')
@@ -313,14 +336,14 @@ def main():
 
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("========================================")
-        print(" BVO v2 - BAIXADOR DE VÍDEOS ONLINE (OldSchool)")
-        print(" Desenvolvido por: Victor Arruda (https://github.com/victorarruda/BVO)")
-        print("========================================\n")
-        print("1 - Baixar um novo vídeo")
-        print("2 - Ver histórico de downloads")
-        print("3 - Configurações (Cookies/Bloqueios)")
-        print("4 - Sair\n")
+        print(f"{YELLOW}========================================")
+        print(f"{YELLOW} BVO - BAIXADOR DE VÍDEOS ONLINE (OldSchool) - V2")
+        print(f"{GRAY} Repositório: (https://github.com/victorarruda/BVO)")
+        print(f"{YELLOW}========================================\n")
+        print(f"{GREEN}1{RESET} - Baixar um novo vídeo")
+        print(f"{GREEN}2{RESET} - Ver histórico de downloads")
+        print(f"{GREEN}3{RESET} - Configurações (Cookies/Bloqueios)")
+        print(f"{GREEN}4{RESET} - Sair\n")
         
         escolha = input("Escolha uma opção: ").strip()
         
