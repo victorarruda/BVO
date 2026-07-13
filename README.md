@@ -24,7 +24,7 @@ winget install Python.Python.3.12 Gyan.FFmpeg Git.Git -e --accept-package-agreem
 Em seguida, baixe e inicie o aplicativo com:
 ```powershell
 git clone https://github.com/victorarruda/BVO.git
-cd BVO/BVO_OldSchool
+cd BVO
 .\iniciar.bat
 ```
 
